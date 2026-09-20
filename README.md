@@ -6,7 +6,7 @@ An automated web aggregator and search engine that parses Reddit megathreads to 
 
 ## 📌 Overview
 
-**CineSeek** simplifies finding media online. Instead of manually navigating megathreads and searching multiple third-party streaming sites, ThreadStream automates the entire process:
+**CineSeek** simplifies finding media online. Instead of manually navigating megathreads and searching multiple third-party streaming sites, CineSeek automates the entire process:
 
 1. Takes a movie or series title from the user.
 2. Parses a curated Reddit Megathread to retrieve trusted index domains.
