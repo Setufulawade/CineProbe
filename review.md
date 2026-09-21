@@ -1,7 +1,8 @@
 Review of the CineSeek Go backend structure
 
 Suggested structure
-markdown
+
+```text
 cineseek-backend/
 ├── cmd/
 │   ├── api/main.go                  # HTTP server only (thin: load config → build app → run)
@@ -70,17 +71,18 @@ cineseek-backend/
 ├── Makefile
 ├── go.mod
 └── go.sum
-Key changes and why
+```
+
+	
+
+s and why
 
 1. Define interfaces where they're consumed, not in domain.
-Idiomatic Go puts small interfaces next to the code that uses them. Keeping domain to entities and errors avoids a grab-bag interfaces.go that grows forever and forces mocks of huge interfaces.
-
+   Idiomatic Go puts small interfaces next to the code that uses them. Keeping domain to entities and errors avoids a grab-bag interfaces.go that grows forever and forces mocks of huge interfaces.
 2. Take megathread indexing off the request path.
-This is the biggest architectural issue. A user search shouldn't trigger Reddit parsing. Add cmd/worker that periodically builds the index into durable storage, and have the API only read it. Redis alone is a poor home for this: an eviction or restart loses your index. Use Postgres (or Redis with persistence and explicit key design) as the source of truth, with Redis as a cache.
-
+   This is the biggest architectural issue. A user search shouldn't trigger Reddit parsing. Add cmd/worker that periodically builds the index into durable storage, and have the API only read it. Redis alone is a poor home for this: an eviction or restart loses your index. Use Postgres (or Redis with persistence and explicit key design) as the source of truth, with Redis as a cache.
 3. Key everything on canonical IDs, not titles.
-Add a TMDB/IMDb metadata client. Scraping by title string produces mismatches ("Dune" vs "Dune: Part Two"). Resolve the query to a tmdb_id first, then match providers against ID + year + normalized title. This also gives you posters, ratings, and better autocomplete for free.
-
+   Add a TMDB/IMDb metadata client. Scraping by title string produces mismatches ("Dune" vs "Dune: Part Two"). Resolve the query to a tmdb_id first, then match providers against ID + year + normalized title. This also gives you posters, ratings, and better autocomplete for free.
 4. Give scrapers a strict contract and separate fetch from parse.
 
 go
@@ -104,12 +106,9 @@ func (p *Pool) Search(ctx context.Context, q domain.MediaQuery) ([]domain.Stream
 A slow provider shouldn't block the response. Return partial results and record which providers failed. Consider streaming results to the client over SSE as each provider finishes; it feels much faster.
 
 6. Prevent cache stampedes.
-Wrap cache-miss scraping with golang.org/x/sync/singleflight so 100 concurrent searches for the same title trigger one scrape. Add stale-while-revalidate (serve stale, refresh in the background) and short negative caching for "no results".
-
+   Wrap cache-miss scraping with golang.org/x/sync/singleflight so 100 concurrent searches for the same title trigger one scrape. Add stale-while-revalidate (serve stale, refresh in the background) and short negative caching for "no results".
 7. Add resilience per provider. A rate limiter (x/time/rate), circuit breaker (sony/gobreaker), and retry with exponential backoff and jitter live in resilience.go. When provider B is down, the breaker opens and you stop hammering it.
-
 8. Link health checking. Dead links are the main quality problem for this kind of product. The worker should HEAD-check stored links, score them, and drop or demote broken ones. Also validate outbound URLs (scheme allowlist, no internal IPs) so scraped data can't turn into an SSRF vector.
-
 9. Rename and simplify a few things.
 
 handler/http → transport/http (clearer, and add a dto.go so you don't serialize domain entities directly).
