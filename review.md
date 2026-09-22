@@ -1,9 +1,9 @@
-Review of the CineSeek Go backend structure
+Review of the cineprobe Go backend structure
 
 Suggested structure
 
 ```text
-cineseek-backend/
+cineprobe-backend/
 ├── cmd/
 │   ├── api/main.go                  # HTTP server only (thin: load config → build app → run)
 │   └── worker/main.go              # Background indexer/refresher (megathread sync, link health checks)

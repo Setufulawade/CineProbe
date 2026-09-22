@@ -1,4 +1,4 @@
-# CineSeek
+# cineprobe
 
 An automated web aggregator and search engine that parses Reddit megathreads to locate and display streaming sources for movies and TV shows.
 
@@ -6,7 +6,7 @@ An automated web aggregator and search engine that parses Reddit megathreads to 
 
 ## 📌 Overview
 
-**CineSeek** simplifies finding media online. Instead of manually navigating megathreads and searching multiple third-party streaming sites, CineSeek automates the entire process:
+**cineprobe** simplifies finding media online. Instead of manually navigating megathreads and searching multiple third-party streaming sites, cineprobe automates the entire process:
 
 1. Takes a movie or series title from the user.
 2. Parses a curated Reddit Megathread to retrieve trusted index domains.

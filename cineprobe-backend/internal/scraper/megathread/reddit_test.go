@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func TestLiveRedditWikiFetch(t *testing.T) {
+func TestLiveRedditWikiFetchAllSections(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping live network test in short mode")
 	}
@@ -14,10 +14,17 @@ func TestLiveRedditWikiFetch(t *testing.T) {
 	scraper := NewRedditScraper(nil)
 	wikiURL := "https://www.reddit.com/r/Piracy/wiki/megathread/movies_and_tv/"
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	// Target sections specified in prompt
+	targetSections := []string{
+		"East / South Asian Drama",
+		"Streaming Sites",
+		"Torrent Sites",
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	streams, err := scraper.FetchWikiLinks(ctx, wikiURL, 5)
+	streams, err := scraper.FetchSectionWikiLinks(ctx, wikiURL, targetSections)
 	if err != nil {
 		t.Fatalf("Live fetch failed: %v", err)
 	}
@@ -25,6 +32,8 @@ func TestLiveRedditWikiFetch(t *testing.T) {
 	if len(streams) == 0 {
 		t.Fatal("Expected extracted streams, got 0")
 	}
+
+	t.Logf("Total streams extracted across sections: %d\n", len(streams))
 
 	for i, s := range streams {
 		t.Logf("[%d] %s -> %s (%s)", i+1, s.Title, s.URL, s.Type)
