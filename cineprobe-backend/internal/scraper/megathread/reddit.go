@@ -10,7 +10,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 
-	"cineseek-backend/internal/domain"
+	"cineprobe-backend/internal/domain"
 )
 
 type RedditScraper struct {

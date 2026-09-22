@@ -1,6 +1,6 @@
 # Testing & Verification Guide
 
-This document outlines how to execute, manage, and troubleshoot tests for the `cineseek-backend` microservice.
+This document outlines how to execute, manage, and troubleshoot tests for the `cineprobe-backend` microservice.
 
 ---
 
@@ -15,9 +15,9 @@ go mod tidy
 
 ### Module Structure
 
-* **Module Root:** `cineseek-backend`
-* **Domain Model:** `cineseek-backend/internal/domain`
-* **Scraper Implementations:** `cineseek-backend/internal/scraper/megathread`
+* **Module Root:** `cineprobe-backend`
+* **Domain Model:** `cineprobe-backend/internal/domain`
+* **Scraper Implementations:** `cineprobe-backend/internal/scraper/megathread`
 
 ---
 
